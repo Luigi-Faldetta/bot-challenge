@@ -1,8 +1,11 @@
 # Workfully Technical Challenge
 
 We want to see how you code and how you make decisions. For that:
+We'd like you to explain, architecture patterns, good pactrices, your testing strategy.
 
-1. You can just decide to show any project you are proud of. Explain what, why, and what you would do differently.
+For that:
+
+1. You can just decide to show any project you are proud of. Explain what, why, and what you would do differently. If it is a shared project or repository, we'll ask you to differenciate the things you did, and decissions you made.
 
 2. Or build the following proposal:
 
