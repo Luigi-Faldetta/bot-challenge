@@ -1,6 +1,8 @@
 # Workfully Technical Challenge
 
-1. Preferably: You can just decide to show any project you are proud of. Explain what, why, and what you would do differently.
+We want to see how you code and how you make decisions. For that:
+
+1. You can just decide to show any project you are proud of. Explain what, why, and what you would do differently.
 
 2. Or build the following proposal:
 
