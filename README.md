@@ -5,9 +5,15 @@ We'd like you to explain, architecture patterns, good pactrices, your testing st
 
 For that:
 
-1. You can just decide to show any project you are proud of. Explain what, why, and what you would do differently. If it is a shared project or repository, we'll ask you to differenciate the things you did, and decissions you made.
+1. You can just decide to show any project you are proud of. Explain what, why, and what you would do differently. If it is a shared project or repository, we'll ask you to differenciate the things you did, and decissions you made. Make sure you can show:
 
-2. Or build the following proposal:
+- Architecture patterns
+- Test
+- Infrastructure decisions
+- ...
+
+  
+2 . Or build the following proposal:
 
 ## Objective
 
@@ -70,8 +76,11 @@ You decide what you think is best and explain it briefly. We can discuss it late
 **1. How did you decide to implement the state machine**
 
 **2. The architecture you used and why**
+We use DDD, Hexagonal, we'd love to see that. 
 
 **3. What database you used and why**
+
+**4. What you decided to test** 
 
 ---
 
