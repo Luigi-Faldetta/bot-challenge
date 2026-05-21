@@ -1,0 +1,23 @@
+# Local development Postgres. Port 5433 (5432 and 54322 are used by other
+# stacks on this machine). Volume keeps data across `docker compose down`.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: workfully_bot_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: workfully_bot
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d workfully_bot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
