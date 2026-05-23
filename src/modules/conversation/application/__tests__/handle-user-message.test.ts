@@ -2,8 +2,8 @@ import {
   HandleUserMessage,
   parseSlashCommand,
   mapIntentToEvent,
-  deriveReply,
 } from "@/modules/conversation/application/handle-user-message";
+import { deriveReply } from "@/modules/conversation/application/derive-reply";
 import {
   Conversation,
   ConversationId,
