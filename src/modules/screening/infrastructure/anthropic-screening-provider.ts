@@ -166,7 +166,13 @@ function mapError(e: unknown): ScreeningProviderError {
   if (e instanceof APIError) {
     if (e.status === 429) return { kind: "RATE_LIMITED" };
     if (e.status === 401 || e.status === 403) return { kind: "AUTH_FAILED" };
-    if (e.status && e.status >= 500) return { kind: "UNAVAILABLE" };
+    // Connection failures (APIConnectionError, APIConnectionTimeoutError)
+    // extend APIError with no status code. Bucket them with 5xx as
+    // UNAVAILABLE — semantically the upstream LLM is unreachable, which
+    // is what we want the user to see.
+    if (e.status === undefined || e.status >= 500) {
+      return { kind: "UNAVAILABLE" };
+    }
     return { kind: "UNKNOWN", detail: `Anthropic ${e.status}: ${e.message}` };
   }
   if (e instanceof Error) return { kind: "UNKNOWN", detail: e.message };

@@ -8,9 +8,9 @@ const createMock = jest.fn();
 
 // Mock the SDK module before importing the provider — Jest hoists this.
 jest.mock("@anthropic-ai/sdk", () => {
-  // Re-export APIError so the real `instanceof APIError` checks in the
-  // provider still work against our fakes. We construct fakes that
-  // extend the real APIError class.
+  // Re-export APIError and its subclasses so the real `instanceof APIError`
+  // checks in the provider still work against our fakes. We construct fakes
+  // that extend the real classes.
   const actual = jest.requireActual("@anthropic-ai/sdk");
   return {
     __esModule: true,
@@ -18,12 +18,13 @@ jest.mock("@anthropic-ai/sdk", () => {
       messages: { create: createMock },
     })),
     APIError: actual.APIError,
+    APIConnectionTimeoutError: actual.APIConnectionTimeoutError,
   };
 });
 
 import { AnthropicScreeningProvider } from "@/modules/screening/infrastructure/anthropic-screening-provider";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { APIError } = require("@anthropic-ai/sdk");
+const { APIError, APIConnectionTimeoutError } = require("@anthropic-ai/sdk");
 
 const happyResponse = {
   content: [
@@ -122,6 +123,18 @@ describe("AnthropicScreeningProvider — error mapping", () => {
 
   it("APIError 503 → UNAVAILABLE", async () => {
     const e = new APIError(503, { error: { message: "Down" } }, "Down", new Headers());
+    createMock.mockRejectedValueOnce(e);
+    const provider = new AnthropicScreeningProvider({ apiKey: "sk-ant-test" });
+    const out = await provider.run({ jobDescription: "x", candidateCv: "y" });
+    if (!isErr(out)) throw new Error();
+    expect(out.error.kind).toBe("UNAVAILABLE");
+  });
+
+  it("APIConnectionTimeoutError (no status) → UNAVAILABLE", async () => {
+    // Timeouts extend APIError but have status === undefined. Should bucket
+    // with 5xx as UNAVAILABLE so the user sees "unreachable, try again"
+    // rather than the generic UNKNOWN copy.
+    const e = new APIConnectionTimeoutError({ message: "Request timed out." });
     createMock.mockRejectedValueOnce(e);
     const provider = new AnthropicScreeningProvider({ apiKey: "sk-ant-test" });
     const out = await provider.run({ jobDescription: "x", candidateCv: "y" });
