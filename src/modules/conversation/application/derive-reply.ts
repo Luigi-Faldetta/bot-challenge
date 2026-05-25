@@ -44,9 +44,9 @@ export function deriveReply(
         return JOB_BUILDER_SAMPLE_JD;
       }
       if (event.type === "COMMAND" && event.command === "cancel") {
-        return "Cancelled. I'm here to help — type /screen to evaluate a candidate, or /newjob to draft a job description.";
+        return "Cancelled. I can help you **screen a candidate** against a job description, or **draft a new job description**. Just tell me what you'd like to do, or use /screen or /newjob.";
       }
-      return "I'm here to help. Type /screen to evaluate a candidate against a job description, or /newjob to draft one.";
+      return "Hi! I can help you **screen a candidate** against a job description, or **draft a new job description**. Just tell me what you'd like to do, or use /screen or /newjob. Type /cancel anytime to go back.";
     case "SCREENING":
       switch (state.step) {
         case "AWAITING_JD":

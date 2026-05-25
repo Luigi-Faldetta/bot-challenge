@@ -14,7 +14,7 @@ const INITIAL_BOT_MESSAGE: BubbleMessage = {
   id: "greeting",
   role: "assistant",
   text:
-    "I'm here to help. Type /screen to evaluate a candidate against a job description, or /newjob to draft one.",
+    "Hi! I can help you **screen a candidate** against a job description, or **draft a new job description**. Just tell me what you'd like to do, or use /screen or /newjob. Type /cancel anytime to go back.",
 };
 
 export function Chat() {
