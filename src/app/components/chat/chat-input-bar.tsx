@@ -2,7 +2,7 @@
 // textarea, send button. Controlled by the parent: parent owns the input
 // value + busy state, this component only handles UI events.
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type ChatInputBarProps = {
   value: string;
@@ -20,6 +20,14 @@ export function ChatInputBar({
   disabled,
 }: ChatInputBarProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // why: disabling the textarea while the bot is streaming makes the browser
+  // drop focus; re-enable doesn't restore it. Refocus on every flip to enabled
+  // (also covers the initial mount, which gives the user an immediate cursor).
+  useEffect(() => {
+    if (!disabled) textareaRef.current?.focus();
+  }, [disabled]);
 
   return (
     <form
@@ -71,6 +79,7 @@ export function ChatInputBar({
       </label>
       <textarea
         id="chat-input"
+        ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => {
