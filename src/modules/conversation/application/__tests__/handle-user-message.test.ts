@@ -98,7 +98,7 @@ describe("HandleUserMessage — entry from IDLE", () => {
     const { useCase } = build();
     const out = await useCase.execute({ conversationId, text: "hello there" });
     expect(out.state).toEqual({ kind: "IDLE" });
-    expect(out.reply).toMatch(/i'm here to help/i);
+    expect(out.reply).toMatch(/Hi! I can help/i);
   });
 
   it("natural-language 'I'd like to screen a candidate' → SCREENING (via classifier)", async () => {
@@ -174,7 +174,7 @@ describe("HandleUserMessage — intent classification", () => {
     });
     // Falls back to USER_MESSAGE: in IDLE, that means we stay in IDLE.
     expect(out.state).toEqual({ kind: "IDLE" });
-    expect(out.reply).toMatch(/i'm here to help/i);
+    expect(out.reply).toMatch(/Hi! I can help/i);
   });
 });
 
