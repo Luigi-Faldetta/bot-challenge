@@ -32,17 +32,15 @@ export function Chat() {
 
   const append = (m: BubbleMessage) => setMessages((prev) => [...prev, m]);
 
-  const replaceText = (id: string, text: string) =>
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, text } : m)));
-
   const send = async (text: string) => {
     if (!text.trim() || busy) return;
     setBusy(true);
     append({ id: crypto.randomUUID(), role: "user", text });
     setInput("");
 
-    const botId = crypto.randomUUID();
-    append({ id: botId, role: "assistant", text: "" });
+    // why: defer creating the assistant bubble until the first chunk arrives,
+    // so the "Thinking…" indicator isn't paired with an empty placeholder.
+    let botId: string | null = null;
 
     try {
       const res = await fetch("/api/conversation/message/stream", {
@@ -51,19 +49,32 @@ export function Chat() {
         body: JSON.stringify({ text }),
       });
       if (!res.ok || !res.body) {
-        replaceText(botId, "Something went wrong — please try again.");
+        append({
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: "Something went wrong — please try again.",
+        });
         return;
       }
       await consumeSSE(res.body, {
-        onChunk: (chunkText) =>
+        onChunk: (chunkText) => {
+          if (botId === null) {
+            botId = crypto.randomUUID();
+            append({ id: botId, role: "assistant", text: chunkText });
+            return;
+          }
+          const id = botId;
           setMessages((prev) =>
-            prev.map((m) =>
-              m.id === botId ? { ...m, text: m.text + chunkText } : m,
-            ),
-          ),
+            prev.map((m) => (m.id === id ? { ...m, text: m.text + chunkText } : m)),
+          );
+        },
       });
     } catch {
-      replaceText(botId, "Network error — please check your connection and try again.");
+      append({
+        id: crypto.randomUUID(),
+        role: "assistant",
+        text: "Network error — please check your connection and try again.",
+      });
     } finally {
       setBusy(false);
     }
